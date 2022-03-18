@@ -65,12 +65,29 @@ class GuessAnalyzer
                 right_color += 1
             end
         end
-        return right_color, right_position
+        return right_color, right_position, guess_code
     end
 end
 
 class ComputerCodeBreaker
-    def computerGuess()
+    def computerGuess(right_color, right_position, guess_code)
+        feedback_hash = {red: 0, blue: 0, yellow: 0, green: 0, purple: 0, orange: 0}
+        unless guess_code.empty?
+            if right_color.to_i > 0
+                guess_code.each do |guess|
+                    feedback_hash[guess.to_sym] += 1
+                end
+            elsif right_position.to_i > 0
+                guess_code.each do |guess|
+                    feedback_hash[guess.to_sym] += 2
+                end
+            else  
+                guess_code.each do |guess|
+                    feedback_hash[guess.to_sym] = 0
+                end
+            end
+        end
+        p feedback_hash
         guess = ['', '', '', '']
         guess.each_with_index do |num, index|
             guess[index] = rand(6)
@@ -107,15 +124,16 @@ class Game
         end
         correct_guess = false
         num_of_guess = 12
+        right_color, right_position, guess_code = 0, 0, []
         while correct_guess == false
             if num_of_guess == 0
                 break
             end
-            code_maker == 1 ? guess = inputValidation() : guess = ComputerCodeBreaker.new.computerGuess()
+            code_maker == 1 ? guess = inputValidation() : guess = ComputerCodeBreaker.new.computerGuess(right_color, right_position, guess_code)
             num_of_guess -= 1
             correct_guess = GuessAnalyzer.new(guess, secret_code).compare_guesses
             if correct_guess == false
-                right_color, right_position = GuessAnalyzer.new(guess, secret_code).give_feedback
+                right_color, right_position, guess_code = GuessAnalyzer.new(guess, secret_code).give_feedback
                 puts "#{right_color} - Right Colors and #{right_position} - Right Positions. Guess again. #{num_of_guess} guesses remaining."
             end
         end
