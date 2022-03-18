@@ -63,6 +63,19 @@ end
 
 class Game
     def initialize
+        puts "Welcome to Mastermind."
+        puts "Who will be the Codemaker? 1-Computer or 2-Player"
+        codemaker = gets.strip.to_i
+        if codemaker == 1
+            computerCodeMaker()
+        elsif codemaker == 2
+            playerCodeMaker()
+        else
+            puts "You must enter 1 or 2\n"
+            Game.new()
+        end
+    end
+    def computerCodeMaker
         secret_code = CodeGenerator.new.generate_code
         correct_guess = false
         num_of_guess = 12
@@ -82,7 +95,7 @@ class Game
             end
         end
         if correct_guess == true
-            puts "You win!"
+            puts "You guess correctly in #{12 - num_of_guess} guesses"
         else puts "You've run out of guesses!"
         end
     end
