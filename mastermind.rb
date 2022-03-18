@@ -45,6 +45,20 @@ class GuessAnalyzer
         end
     end
 
+    def give_feedback
+        guess_code = retrievePegs(guess)
+        right_color = 0
+        right_position = 0
+
+        guess_code.each_with_index do |guess, index|
+            if secret_code[index] == guess
+                right_position += 1
+            elsif secret_code.include?(guess)
+                right_color += 1
+            end
+        end
+        return right_color, right_position
+    end
 end
 
 class Game
@@ -55,9 +69,12 @@ class Game
         puts "Welcome to Mastermind. The computer has created a secret code."
         puts "Enter your guess as a 4 digit number. 0-Red, 1-Blue, 2-Yellow, 3-Green, 4-Purple, 5-Orange"
         while correct_guess == false
-            puts "Incorrect. Guess again"
             guess = gets.strip.split('')
             correct_guess = GuessAnalyzer.new(guess, secret_code).compare_guesses
+            if correct_guess == false
+                right_color, right_position = GuessAnalyzer.new(guess, secret_code).give_feedback
+                puts "You have #{right_color} - Right Colors and #{right_position} - Right Positions. Guess again."
+            end
         end
         puts "You win!"
     end
