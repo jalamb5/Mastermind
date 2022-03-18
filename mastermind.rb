@@ -67,26 +67,33 @@ class Game
         puts "Who will be the Codemaker? 1-Computer or 2-Player"
         codemaker = gets.strip.to_i
         if codemaker == 1
-            computerCodeMaker()
+            gameLoop(1)
         elsif codemaker == 2
-            playerCodeMaker()
+            gameLoop(2)
         else
             puts "You must enter 1 or 2\n"
             Game.new()
         end
     end
-    def computerCodeMaker
-        secret_code = CodeGenerator.new.generate_code
+
+    def gameLoop(code_maker)
+        if code_maker == 1 
+            secret_code = CodeGenerator.new.generate_code
+            puts "The computer has created a secret code."
+            puts "Enter your guess as a 4 digit number. 0-Red, 1-Blue, 2-Yellow, 3-Green, 4-Purple, 5-Orange"
+        else 
+            puts "Create your secret code."
+            puts "Enter your code as a 4 digit number. 0-Red, 1-Blue, 2-Yellow, 3-Green, 4-Purple, 5-Orange"
+            secret_code = inputValidation()
+        end
         correct_guess = false
         num_of_guess = 12
-        puts "Welcome to Mastermind. The computer has created a secret code."
-        puts "Enter your guess as a 4 digit number. 0-Red, 1-Blue, 2-Yellow, 3-Green, 4-Purple, 5-Orange"
+    
         while correct_guess == false
             if num_of_guess == 0
                 break
             end
-            # guess = gets.strip.split('')
-            guess = inputValidation()
+            code_maker == 1 ? guess = inputValidation() : guess = computerGuess()
             num_of_guess -= 1
             correct_guess = GuessAnalyzer.new(guess, secret_code).compare_guesses
             if correct_guess == false
@@ -99,11 +106,10 @@ class Game
         else puts "You've run out of guesses!"
         end
     end
-
     def inputValidation
         guess = gets.strip
         unless guess.length == 4 && guess.count("^0-9").zero?
-            puts "Invalid guess. Guess again"
+            puts "Invalid selection. Choose again"
             inputValidation()
         end
         return guess.split('')
