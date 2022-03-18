@@ -1,4 +1,4 @@
-class Pegs
+class Pegs # Allow computer/user to select colored pegs
     attr_accessor :PEG, :peg_choice
     PEG = ['red', 'blue', 'yellow', 'green', 'purple', 'orange']
     def initialize(peg_choice)
@@ -20,7 +20,7 @@ class CodeGenerator
         code
     end
 
-    def generate_pegs(secret_code)
+    def generate_pegs(secret_code) # convert number values to color peg values
         code = []
         secret_code.each do |num|
             code << Pegs.new(num.to_i).select_peg
@@ -36,7 +36,7 @@ class GuessAnalyzer
         @secret_code = secret_code
     end
 
-    def retrievePegs(guess)
+    def retrievePegs(guess) 
         guess_code = []
         guess.each do |num|
             guess_code << Pegs.new(num.to_i).select_peg
@@ -88,7 +88,7 @@ class ComputerCodeBreaker
                 end
             end
         end
-
+# because I initially chose to use numbers to index into the pegs array, the color string values must be translated to ints to work in other methods.
         untranslated_guess = []
         feedback_hash.map do |color, weight|
             weight.times { untranslated_guess << color }
@@ -124,23 +124,23 @@ class Game
 
     def gameLoop(code_maker)
         code_maker == 1 ? player = 'You' : player = 'Computer'
-        if code_maker == 1 
+        if code_maker == 1 # computer is codemaker
             secret_code = CodeGenerator.new.generate_code
             puts "The computer has created a secret code."
             puts "Enter your guess as a 4 digit number. 0-Red, 1-Blue, 2-Yellow, 3-Green, 4-Purple, 5-Orange"
-        else 
+        else # human is codemaker
             puts "Create your secret code."
             puts "Enter your code as a 4 digit number. 0-Red, 1-Blue, 2-Yellow, 3-Green, 4-Purple, 5-Orange"
             secret_code = CodeGenerator.new.generate_pegs(inputValidation())
         end
         correct_guess = false
-        num_of_guess = 12
+        num_of_guess = 12 # number of rounds, game ends at 0
         right_color, right_position, guess_code = 0, 0, []
         while correct_guess == false
             if num_of_guess == 0
                 break
             end
-            code_maker == 1 ? guess = inputValidation() : guess = ComputerCodeBreaker.new.computerGuess(right_color, right_position, guess_code)
+            code_maker == 1 ? guess = inputValidation() : guess = ComputerCodeBreaker.new.computerGuess(right_color, right_position, guess_code) # use feedback to inform computer guesses
             num_of_guess -= 1
             correct_guess = GuessAnalyzer.new(guess, secret_code).compare_guesses
             if correct_guess == false
@@ -154,7 +154,7 @@ class Game
         end
     end
 
-    def inputValidation
+    def inputValidation # ensures all inputs are 4 digits and returns as array
         guess = gets.strip
         unless guess.length == 4 && guess.count("^0-9").zero?
             puts "Invalid selection. Choose again"
