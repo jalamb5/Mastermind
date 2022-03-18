@@ -65,17 +65,35 @@ class Game
     def initialize
         secret_code = CodeGenerator.new.generate_code
         correct_guess = false
+        num_of_guess = 12
         puts "Welcome to Mastermind. The computer has created a secret code."
         puts "Enter your guess as a 4 digit number. 0-Red, 1-Blue, 2-Yellow, 3-Green, 4-Purple, 5-Orange"
         while correct_guess == false
-            guess = gets.strip.split('')
+            if num_of_guess == 0
+                break
+            end
+            # guess = gets.strip.split('')
+            guess = inputValidation()
+            num_of_guess -= 1
             correct_guess = GuessAnalyzer.new(guess, secret_code).compare_guesses
             if correct_guess == false
                 right_color, right_position = GuessAnalyzer.new(guess, secret_code).give_feedback
-                puts "You have #{right_color} - Right Colors and #{right_position} - Right Positions. Guess again."
+                puts "You have #{right_color} - Right Colors and #{right_position} - Right Positions. Guess again. #{num_of_guess} guesses remaining."
             end
         end
-        puts "You win!"
+        if correct_guess == true
+            puts "You win!"
+        else puts "You've run out of guesses!"
+        end
+    end
+
+    def inputValidation
+        guess = gets.strip
+        unless guess.length == 4 && guess.count("^0-9").zero?
+            puts "Invalid guess. Guess again"
+            inputValidation()
+        end
+        return guess.split('')
     end
 end
 
