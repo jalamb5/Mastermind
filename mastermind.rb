@@ -76,11 +76,11 @@ class ComputerCodeBreaker
         unless guess_code.empty?
             if right_color.to_i > 0
                 guess_code.each do |guess|
-                    feedback_hash[guess.to_sym] += 1
+                    feedback_hash[guess.to_sym] += 50
                 end
             elsif right_position.to_i > 0
                 guess_code.each do |guess|
-                    feedback_hash[guess.to_sym] += 2
+                    feedback_hash[guess.to_sym] += 100
                 end
             else  
                 guess_code.each do |guess|
@@ -103,7 +103,6 @@ class ComputerCodeBreaker
         guess.each_with_index do |num, index|
             guess[index] = translated_guess.sample
         end
-        p guess
         return guess
     end
 end
