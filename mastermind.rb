@@ -64,7 +64,6 @@ end
 class Game
     def initialize
         secret_code = CodeGenerator.new.generate_code
-        p secret_code
         correct_guess = false
         puts "Welcome to Mastermind. The computer has created a secret code."
         puts "Enter your guess as a 4 digit number. 0-Red, 1-Blue, 2-Yellow, 3-Green, 4-Purple, 5-Orange"
