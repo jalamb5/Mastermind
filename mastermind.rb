@@ -19,6 +19,14 @@ class CodeGenerator
         end
         code
     end
+
+    def generate_pegs(secret_code)
+        code = []
+        secret_code.each do |num|
+            code << Pegs.new(num.to_i).select_peg
+        end
+        code
+    end
 end
 
 class GuessAnalyzer
@@ -61,6 +69,16 @@ class GuessAnalyzer
     end
 end
 
+class ComputerCodeBreaker
+    def computerGuess()
+        guess = ['', '', '', '']
+        guess.each_with_index do |num, index|
+            guess[index] = rand(6)
+        end
+        return guess
+    end
+end
+
 class Game
     def initialize
         puts "Welcome to Mastermind."
@@ -77,6 +95,7 @@ class Game
     end
 
     def gameLoop(code_maker)
+        code_maker == 1 ? player = 'You' : player = 'Computer'
         if code_maker == 1 
             secret_code = CodeGenerator.new.generate_code
             puts "The computer has created a secret code."
@@ -84,28 +103,28 @@ class Game
         else 
             puts "Create your secret code."
             puts "Enter your code as a 4 digit number. 0-Red, 1-Blue, 2-Yellow, 3-Green, 4-Purple, 5-Orange"
-            secret_code = inputValidation()
+            secret_code = CodeGenerator.new.generate_pegs(inputValidation())
         end
         correct_guess = false
         num_of_guess = 12
-    
         while correct_guess == false
             if num_of_guess == 0
                 break
             end
-            code_maker == 1 ? guess = inputValidation() : guess = computerGuess()
+            code_maker == 1 ? guess = inputValidation() : guess = ComputerCodeBreaker.new.computerGuess()
             num_of_guess -= 1
             correct_guess = GuessAnalyzer.new(guess, secret_code).compare_guesses
             if correct_guess == false
                 right_color, right_position = GuessAnalyzer.new(guess, secret_code).give_feedback
-                puts "You have #{right_color} - Right Colors and #{right_position} - Right Positions. Guess again. #{num_of_guess} guesses remaining."
+                puts "#{right_color} - Right Colors and #{right_position} - Right Positions. Guess again. #{num_of_guess} guesses remaining."
             end
         end
         if correct_guess == true
-            puts "You guess correctly in #{12 - num_of_guess} guesses"
-        else puts "You've run out of guesses!"
+            puts "#{player} guessed correctly in #{12 - num_of_guess} guesses"
+        else puts "#{player} ran out of guesses!"
         end
     end
+
     def inputValidation
         guess = gets.strip
         unless guess.length == 4 && guess.count("^0-9").zero?
