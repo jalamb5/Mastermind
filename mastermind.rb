@@ -71,7 +71,8 @@ end
 
 class ComputerCodeBreaker
     def computerGuess(right_color, right_position, guess_code)
-        feedback_hash = {red: 0, blue: 0, yellow: 0, green: 0, purple: 0, orange: 0}
+        feedback_hash = {red: 1, blue: 1, yellow: 1, green: 1, purple: 1, orange: 1}
+        translation_hash = {red: 0, blue: 1, yellow: 2, green: 3, purple: 4, orange: 5}
         unless guess_code.empty?
             if right_color.to_i > 0
                 guess_code.each do |guess|
@@ -83,15 +84,26 @@ class ComputerCodeBreaker
                 end
             else  
                 guess_code.each do |guess|
-                    feedback_hash[guess.to_sym] = 0
+                    feedback_hash[guess.to_sym] = 1
                 end
             end
         end
-        p feedback_hash
+
+        untranslated_guess = []
+        feedback_hash.map do |color, weight|
+            weight.times { untranslated_guess << color }
+        end
+
+        translated_guess = []
+        untranslated_guess.map do |color|
+            translated_guess << translation_hash[color]
+        end
+
         guess = ['', '', '', '']
         guess.each_with_index do |num, index|
-            guess[index] = rand(6)
+            guess[index] = translated_guess.sample
         end
+        p guess
         return guess
     end
 end
