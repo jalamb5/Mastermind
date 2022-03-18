@@ -1,5 +1,7 @@
 Mastermind game
 
+Built as part of The Odin Project to work on OOP.
+
 Functionality:
 - Player can attempt to guess a randomly generated code
 - Player can set a code for the computer to attempt to guess
